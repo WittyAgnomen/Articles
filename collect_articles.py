@@ -8,12 +8,19 @@ import xml.etree.ElementTree as ET
 import pandas as pd
 import random
 import urllib2
+import sqlite3
 
 #http://feeds.foxnews.com/foxnews/politics
 #http://rss.nytimes.com/services/xml/rss/nyt/Politics.xml
 
 #create stucture/table to hold data
-data = pd.DataFrame([['test','test']], columns=['url','leaning'])
+#data = pd.DataFrame([['test','test']], columns=['url','leaning'])
+
+#connect to sql database
+conn = sqlite3.connect('articles.db')
+
+#create cursor
+c = conn.cursor()
 
 #holds rss/xml pages, will add more
 papers=['http://feeds.foxnews.com/foxnews/politics','http://rss.nytimes.com/services/xml/rss/nyt/Politics.xml']
@@ -54,17 +61,27 @@ for p in papers:
 				count+=1
 			
 			except:
-				arr=['dl parser error']
+				arr=['dl parser error','']
 				count+=1
 		
 			#pd.Series(arr)
 			#add to dataframe
-			data.loc[len(data)]=arr
+			#data.loc[len(data)]=arr
+			
+			#add row to sql, add only unique articles later
+			c.execute('INSERT INTO articles VALUES (?,?)', arr)
 
 	except:
 		print 'error with loading site'
 
-data.to_csv('urlfeed.csv') #save a csv
+# Save (commit) the changes
+conn.commit()
+
+#close sqlite connection
+conn.close()
+
+
+#data.to_csv('urlfeed.csv') #save a csv
 
 
 
