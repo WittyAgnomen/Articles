@@ -23,7 +23,14 @@ conn = sqlite3.connect('articles.db')
 c = conn.cursor()
 
 #holds rss/xml pages, will add more
-papers=['http://feeds.foxnews.com/foxnews/politics','http://rss.nytimes.com/services/xml/rss/nyt/Politics.xml']
+papers=['http://feeds.foxnews.com/foxnews/politics','http://rss.nytimes.com/services/xml/rss/nyt/Politics.xml',
+	'http://rss.cnn.com/rss/cnn_allpolitics.rss',
+	'http://www.huffingtonpost.com/feeds/verticals/politics/news.xml',
+	'http://feeds.slate.com/slate-101526',
+	'http://www.politico.com/rss/politics08.xml',
+	'http://www.wnd.com/category/front-page/politics/feed/',
+	'http://www.theblaze.com/stories/feed/'
+	]
 
 #loop for going through each xml
 for p in papers:
@@ -83,6 +90,14 @@ conn.close()
 
 #data.to_csv('urlfeed.csv') #save a csv
 
+#update table to only take unique
+'''
+sqlite> create table articles
+   ...> (
+   ...> url varchar(2048) not null unique,
+   ...> leaning varchar(8)
+   ...> );
+'''
 
 
 
